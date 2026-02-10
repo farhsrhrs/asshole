@@ -15,7 +15,11 @@ using System.Windows.Forms;
 namespace asshole
 {
     public partial class Main : Form
+
     {
+        public string Filter { get; set; }
+        public string FilterSUP { get; set; }
+        public string Search { get; set; }
         public Main(string Fio, string Role)
         {
             InitializeComponent();
@@ -27,7 +31,7 @@ namespace asshole
                 label1.Hide();
                 button1.Hide();
                 button2.Hide();
-                textBox1.Hide();
+                textSearchBox.Hide();
                 button3.Hide();
                 button4.Hide();
             }
@@ -51,7 +55,7 @@ namespace asshole
             this.flowLayoutPanel1.Controls.Add(addProductControl);
         }
 
-        public void LoadProduct()
+        public void LoadProduct(string Filter ="", string search ="", string SUP = "Все поставщики")
         {
 
             flowLayoutPanel1.Controls.Clear(); // Очистка текущих элементов перед загрузкой новых
@@ -63,7 +67,12 @@ namespace asshole
                 Join product_name on public.product_name.id = product.product_name_fk
                 Join ""SUP"" on ""SUP"".id = product.""SUP""
                 Join category on category.id = product.category
-                Join ""MFG"" on public.""MFG"".id = product.""MFG""";
+                Join ""MFG"" on public.""MFG"".id = product.""MFG""
+
+                {(search != "" ? $"WHERE product_name.product ILIKE '%{search}%' " : " ")} 
+
+                {(SUP != "Все поставщики" ? $@"WHERE ""SUP"".sup_name = '{SUP}' " : " ")} 
+                ORDER BY product.price {Filter}";
 
                 //               string query = $@"SELECT id, art, product_name_fk, ""MS"", price, ""SUP"", ""MFG"", category, discount, amount, description, photo
                 //FROM public.product;";
@@ -72,7 +81,7 @@ namespace asshole
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
 
-                        flowLayoutPanel1.SuspendLayout();//остоновить
+                        //flowLayoutPanel1.SuspendLayout();//остоновить
                         while (reader.Read())
                         {
                             ProductControl productControl = new ProductControl();
@@ -92,7 +101,7 @@ namespace asshole
                             productControl.SetLabel();//переданые переменные присваевает к label
                             flowLayoutPanel1.Controls.Add(productControl);
                         }
-                        flowLayoutPanel1.ResumeLayout(false);//продолжить
+                        //flowLayoutPanel1.ResumeLayout(false);//продолжить
                         flowLayoutPanel1.PerformLayout();
                     }
 
@@ -127,7 +136,7 @@ namespace asshole
                             order.dateDelivery = reader.GetDateTime(1).ToString("d");
                             order.address = reader.GetString(2);
                             order.status = reader.GetString(5);
-                            order.articul = reader.GetInt32(6).ToString();
+                            order.id = reader.GetInt32(6);
                             order.SetOrder();
                             flowLayoutPanel1.Controls.Add(order);
 
@@ -138,6 +147,17 @@ namespace asshole
                     }
                 }
             }
+        }
+
+        public void LoadEditAddOrder(int id)
+        {
+            flowLayoutPanel1.Controls.Clear();
+            AddOrder AddOrder = new AddOrder(true);
+            AddOrder.isEditOrder = true;
+            AddOrder.SelectAddOrder(id);
+            this.flowLayoutPanel1.Controls.Add(AddOrder);
+
+
         }
 
         public void LoadProductAdd()
@@ -170,6 +190,42 @@ namespace asshole
         private void button4_Click(object sender, EventArgs e)//добавить заказ
         {
             LoadAddOrder();
+        }
+
+        private void checkBoxDESC_CheckedChanged(object sender, EventArgs e)//
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox.Checked == true)
+            {
+                Filter = "DESC";
+                checkBoxASC.Checked = false;
+                LoadProduct(Filter: Filter);
+
+            }
+        }
+
+        private void checkBoxASC_CheckedChanged(object sender, EventArgs e)//
+        {
+            CheckBox checkBox =  (CheckBox)sender;
+            if (checkBox.Checked == true)
+            {
+                Filter = "ASC";
+                checkBoxDESC.Checked = false;
+                LoadProduct(Filter: Filter);
+
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string SUP = comboBoxSUP.Text;
+            LoadProduct(SUP: SUP);
+        }
+
+        private void textSearchBox_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            string search = textSearchBox.Text;
+            LoadProduct(search: search);
         }
     }
 }

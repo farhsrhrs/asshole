@@ -30,7 +30,7 @@
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textSearchBox = new System.Windows.Forms.TextBox();
             this.labelfio = new System.Windows.Forms.Label();
             this.labelRole = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -38,11 +38,12 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBoxASC = new System.Windows.Forms.CheckBox();
+            this.checkBoxDESC = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxSUP = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,18 +68,19 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Поиск";
             // 
-            // textBox1
+            // textSearchBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(1105, 91);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(135, 20);
-            this.textBox1.TabIndex = 2;
+            this.textSearchBox.Location = new System.Drawing.Point(1105, 91);
+            this.textSearchBox.Name = "textSearchBox";
+            this.textSearchBox.Size = new System.Drawing.Size(135, 20);
+            this.textSearchBox.TabIndex = 2;
+            this.textSearchBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textSearchBox_KeyDown_1);
             // 
             // labelfio
             // 
             this.labelfio.AutoSize = true;
             this.labelfio.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelfio.Location = new System.Drawing.Point(191, 37);
+            this.labelfio.Location = new System.Drawing.Point(226, 37);
             this.labelfio.Name = "labelfio";
             this.labelfio.Size = new System.Drawing.Size(61, 22);
             this.labelfio.TabIndex = 3;
@@ -140,33 +142,37 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Image = global::asshole.Properties.Resources.Icon;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(58, 55);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
-            // checkBox1
+            // checkBoxASC
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(1105, 161);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(140, 23);
-            this.checkBox1.TabIndex = 10;
-            this.checkBox1.Text = "По возростанию";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBoxASC.AutoSize = true;
+            this.checkBoxASC.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxASC.Location = new System.Drawing.Point(1105, 161);
+            this.checkBoxASC.Name = "checkBoxASC";
+            this.checkBoxASC.Size = new System.Drawing.Size(140, 23);
+            this.checkBoxASC.TabIndex = 10;
+            this.checkBoxASC.Text = "По возростанию";
+            this.checkBoxASC.UseVisualStyleBackColor = true;
+            this.checkBoxASC.CheckedChanged += new System.EventHandler(this.checkBoxASC_CheckedChanged);
             // 
-            // checkBox2
+            // checkBoxDESC
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox2.Location = new System.Drawing.Point(1105, 192);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(122, 23);
-            this.checkBox2.TabIndex = 11;
-            this.checkBox2.Text = "По убыванию";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBoxDESC.AutoSize = true;
+            this.checkBoxDESC.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxDESC.Location = new System.Drawing.Point(1105, 192);
+            this.checkBoxDESC.Name = "checkBoxDESC";
+            this.checkBoxDESC.Size = new System.Drawing.Size(122, 23);
+            this.checkBoxDESC.TabIndex = 11;
+            this.checkBoxDESC.Text = "По убыванию";
+            this.checkBoxDESC.UseVisualStyleBackColor = true;
+            this.checkBoxDESC.CheckedChanged += new System.EventHandler(this.checkBoxDESC_CheckedChanged);
             // 
             // label3
             // 
@@ -188,36 +194,48 @@
             this.label2.TabIndex = 13;
             this.label2.Text = "Постовщик:";
             // 
-            // comboBox1
+            // comboBoxSUP
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comboBoxSUP.FormattingEnabled = true;
+            this.comboBoxSUP.Items.AddRange(new object[] {
             "Все поставщики",
             "Обувь для вас",
             "Kari"});
-            this.comboBox1.Location = new System.Drawing.Point(1106, 252);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 14;
+            this.comboBoxSUP.Location = new System.Drawing.Point(1106, 252);
+            this.comboBoxSUP.Name = "comboBoxSUP";
+            this.comboBoxSUP.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSUP.TabIndex = 14;
+            this.comboBoxSUP.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(76, 37);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(135, 22);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "ООО \"Обувь\"";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1253, 536);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.comboBoxSUP);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.checkBoxDESC);
+            this.Controls.Add(this.checkBoxASC);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.labelRole);
             this.Controls.Add(this.labelfio);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.textSearchBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "Main";
@@ -230,7 +248,7 @@
 
         #endregion
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textSearchBox;
         private System.Windows.Forms.Label labelfio;
         private System.Windows.Forms.Label labelRole;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
@@ -239,10 +257,11 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBoxASC;
+        private System.Windows.Forms.CheckBox checkBoxDESC;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxSUP;
+        private System.Windows.Forms.Label label4;
     }
 }

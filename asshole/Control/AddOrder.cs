@@ -22,6 +22,8 @@ namespace asshole.Control
         public string dateOrder { get; set; }
         public string dateDelivery { get; set; }
         public bool isEditOrder { get; set; }
+
+        public int ID { get; set; }
         public AddOrder(bool isEditOrder)
         {
             InitializeComponent();
@@ -41,7 +43,7 @@ namespace asshole.Control
             int orderID;
             using (NpgsqlConnection connection = new NpgsqlConnection(Resources.connectionDB))
             {
-                connection.Open();  
+                connection.Open();
                 string query3 = $@"SELECT nextval(pg_get_serial_sequence('public.""order""', 'id'))";     //
 
                 using (NpgsqlCommand command = new NpgsqlCommand(query3, connection))
@@ -50,10 +52,10 @@ namespace asshole.Control
                     orderID = Convert.ToInt32(command.ExecuteScalar());
 
                 }
-                
 
 
-                  //@code, code
+
+                //@code, code
                 string query = $@"INSERT INTO public.""order""(
 	 date_order, date_delivery, address, fio, status)
 	VALUES (
@@ -72,7 +74,7 @@ namespace asshole.Control
                     command.Parameters.AddWithValue("@status", comboBox3.SelectedIndex + 1);
                     //orderID = Convert.ToInt32(command.ExecuteScalar());
                 }
-        
+
                 string queryProductOrder = $@"INSERT INTO public.product_order(
 	id_order, art, amount)
 	VALUES ((SELECT id from ""order"" Where id = @id),
@@ -93,8 +95,34 @@ namespace asshole.Control
                 }
             }
         }
-        
 
+        public void UpdateAddOrder()//todo:
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Resources.connectionDB))
+            {
+                connection.Open();
+                string query = $@"UPDATE public.""order""
+                                SET date_order = @date_order,
+                                    date_delivery = @date_delivery,
+                                    address = @address,
+                                    fio = @fio,
+                                    status = @status
+                                WHERE id = @id; ";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@date_order", dateTimePicker1.Value);
+                    command.Parameters.AddWithValue("@date_delivery", dateTimePicker2.Value);
+                    command.Parameters.AddWithValue("@address", comboBox2.SelectedIndex + 1);
+                    command.Parameters.AddWithValue("@fio", comboBox1.SelectedIndex + 1);
+                    command.Parameters.AddWithValue("@status", comboBox3.SelectedIndex + 1);
+                    command.Parameters.AddWithValue("@id", ID);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+
+            }
+
+        }
         private void button2_Click(object sender, EventArgs e)//назад
         {
             Main main = this.FindForm() as Main;
@@ -105,7 +133,9 @@ namespace asshole.Control
         {
             if (isEditOrder)
             {
-                //Upda
+                UpdateAddOrder();
+                Main main = this.FindForm() as Main;
+                main.LoadProduct();
             }
             else
             {
@@ -114,7 +144,37 @@ namespace asshole.Control
             }
 
         }
+        public void SelectAddOrder(int id)
+        {
+            ID = id ;
+            using (NpgsqlConnection connection = new NpgsqlConnection(Resources.connectionDB))
+            {
+                connection.Open();
+                string query = $@"SELECT  date_order, date_delivery, ""address"".address_name, ""User"".fio, code, ""status"".status_name ,""order"".id
+	FROM public.""order""
+	Join ""User"" on ""User"".id = ""order"".fio
+	Join address on address.id = ""order"".address
+	Join status on status.id = ""order"".status
+    Where ""order"".id = @id";
 
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dateTimePicker1.Value = reader.GetDateTime(0);
+                            dateTimePicker2.Value = reader.GetDateTime(1);
+                            comboBox2.Text = reader.GetString(2);
+                            comboBox1.Text = reader.GetString(3);
+                            comboBox3.Text = reader.GetString(5);
+                        }
+                    }
+
+                }
+            }
+        }
         private void button1_Click(object sender, EventArgs e)//добавить товар
         {
             if (comboBox4.Text != null & numericUpDownAddQuantity.Value > 0)
