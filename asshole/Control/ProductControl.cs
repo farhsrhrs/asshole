@@ -1,4 +1,6 @@
-﻿using System;
+﻿using asshole.Properties;
+using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +32,14 @@ namespace asshole
         {
             InitializeComponent();
         }
+        //public void DiscountCount()
+        //{   
+        //    if (Price > )
+        //    {
+
+        //    }
+        //    labelDiscount.Text = ;
+        //}
         public void SetLabel()
         {
             LabelCategory.Text = "Категория товара: " + Category; //если делать назвать label как Category он не будет работать ссылки ломаютсы
@@ -39,18 +49,87 @@ namespace asshole
 
             LabelSUP.Text = "Постовщик: " + SUP;
 
-            LabelPrice.Text = "Цена: " + Price.ToString();
+            LabelPrice.Text =  Price.ToString() + " руб.";
+            //if 
+
+
+
+
+
 
             LabelMS.Text = "Единица измерения: " + MS;
             LabelAmount.Text = "Количество на складе: "+ Amount;
+            if(Amount == 0)//0 на складе цвет голубой
+            {
+                LabelAmount.ForeColor = Color.Aqua;
 
+            }
+
+            labelDiscount.Text = "Скидка: "+ Discount + " %";
+
+
+            if (Discount > 15)//цвет скидки
+            {
+                labelDiscount.BackColor = ColorTranslator.FromHtml("#2E8B57");
+            }
+            if(Discount == 0)
+            {
+                labelPriceWithDiscount.Visible = false;
+            }
+            else
+            {
+                labelPriceWithDiscount.Visible = true;
+                LabelPrice.Font = new Font(LabelPrice.Font, FontStyle.Strikeout);
+                LabelPrice.ForeColor = Color.Red;
+
+                labelPriceWithDiscount.Text = ((100 - Discount) / 100f * Price).ToString("F2") + " руб.";
+            }
 
 
 
         }
 
+        private void button1_Click(object sender, EventArgs e)//редактирование
+        {
+            Main mainform = this.FindForm() as Main;
+            mainform.LoadEditProduct(ART);
+        }
 
+        private void button2_Click(object sender, EventArgs e)//удалить
+        {
+            using(NpgsqlConnection connection = new NpgsqlConnection(Resources.connectionDB))
+            {
+                connection.Open();
+                string queryCheckOrders = $@"SELECT COUNT(*) FROM product_order WHERE art = '{ART}'; ";
+                using (NpgsqlCommand commandCheck = new NpgsqlCommand(queryCheckOrders, connection))
+                {
+                    int orderCount = Convert.ToInt32(commandCheck.ExecuteScalar());//надо запомнить
 
+                    if (orderCount > 0)
+                    {
+                        MessageBox.Show("Невозможно удалить товар, так как он связан с существующими заказами.", "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else
+                    {
+                        if (MessageBox.Show("Вы уверены, что хотите удалить этот товар?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        {
+                            string query = $@"DELETE FROM product WHERE art = '{ART}'; ";
+                            using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                            {
+                                command.ExecuteNonQuery();
+                                {
+                                    connection.Close();
+                                }
+                                this.Parent.Controls.Remove(this);//TODO:?
+                                MessageBox.Show("Товар успешно удален из базы данных.", "Удаление товара", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
+                            }
+                        } // /надо запомнить
+                    }
+                }
+            }
 
+        }
     }
 }

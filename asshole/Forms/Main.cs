@@ -1,4 +1,5 @@
-﻿using asshole.Properties;
+﻿using asshole.Control;
+using asshole.Properties;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ using System.Windows.Forms;
 
 namespace asshole
 {
-    public partial class Form2 : Form
+    public partial class Main : Form
     {
-        public Form2(string Fio, string Role)
+        public Main(string Fio, string Role)
         {
             InitializeComponent();
             LoadProduct();
@@ -27,6 +28,8 @@ namespace asshole
                 button1.Hide();
                 button2.Hide();
                 textBox1.Hide();
+                button3.Hide();
+                button4.Hide();
             }
             labelRole.Text = "Роль: " + Role;
             labelfio.Text = "ФИО: " + Fio;
@@ -36,6 +39,17 @@ namespace asshole
 
         public string Role { get; private set; }
         public string Fio { get; private set; }
+        public void LoadEditProduct(string ArticleTovar)//string ArticleTovar
+        {
+            flowLayoutPanel1.Controls.Clear();
+            AddProductControl addProductControl = new AddProductControl(true);
+            addProductControl.ART = ArticleTovar;
+           
+            addProductControl.setAddProduct();
+            addProductControl.LoadAddProductData(ArticleTovar);//
+
+            this.flowLayoutPanel1.Controls.Add(addProductControl);
+        }
 
         public void LoadProduct()
         {
@@ -50,6 +64,7 @@ namespace asshole
                 Join ""SUP"" on ""SUP"".id = product.""SUP""
                 Join category on category.id = product.category
                 Join ""MFG"" on public.""MFG"".id = product.""MFG""";
+
                 //               string query = $@"SELECT id, art, product_name_fk, ""MS"", price, ""SUP"", ""MFG"", category, discount, amount, description, photo
                 //FROM public.product;";
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
@@ -69,6 +84,9 @@ namespace asshole
                             productControl.Price = reader.GetInt32(5);
                             productControl.Amount = reader.GetInt32(6);
                             productControl.MS = reader.GetString(7);
+                            productControl.ART = reader.GetString(8);
+                            productControl.Discount = reader.GetInt32(9);
+
 
 
                             productControl.SetLabel();//переданые переменные присваевает к label
@@ -81,7 +99,7 @@ namespace asshole
 
                 }
 
-                label1.Text = "fuck";
+               
                 connection.Close();
             }
         }
@@ -105,8 +123,8 @@ namespace asshole
                         while (reader.Read())
                         {
                             Order order = new Order();
-                            order.dateOrder = reader.GetDateTime(0).ToString();
-                            order.dateDelivery = reader.GetDateTime(1).ToString();
+                            order.dateOrder = reader.GetDateTime(0).ToString("d");
+                            order.dateDelivery = reader.GetDateTime(1).ToString("d");
                             order.address = reader.GetString(2);
                             order.status = reader.GetString(5);
                             order.articul = reader.GetInt32(6).ToString();
@@ -122,6 +140,18 @@ namespace asshole
             }
         }
 
+        public void LoadProductAdd()
+        {
+            flowLayoutPanel1.Controls.Clear();
+            AddProductControl addProductControl = new AddProductControl(false);
+            flowLayoutPanel1.Controls.Add(addProductControl);
+        }
+        public void LoadAddOrder()
+        {
+            flowLayoutPanel1.Controls.Clear();
+            AddOrder addorder = new AddOrder(false);
+            flowLayoutPanel1.Controls.Add(addorder);
+        }
         private void button2_Click(object sender, EventArgs e)//заказы
         {
             LoadOrder();
@@ -130,6 +160,16 @@ namespace asshole
         private void button1_Click(object sender, EventArgs e)//товары
         {
             LoadProduct();
+        }
+
+        private void button3_Click(object sender, EventArgs e)//добавить товар
+        {
+            LoadProductAdd();
+        }
+
+        private void button4_Click(object sender, EventArgs e)//добавить заказ
+        {
+            LoadAddOrder();
         }
     }
 }

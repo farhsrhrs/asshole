@@ -39,6 +39,8 @@
             this.labelAddress = new System.Windows.Forms.Label();
             this.labelDateOrder = new System.Windows.Forms.Label();
             this.labelDateDelivery = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -99,58 +101,85 @@
             // labelArticul
             // 
             this.labelArticul.AutoSize = true;
+            this.labelArticul.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelArticul.Location = new System.Drawing.Point(21, 33);
             this.labelArticul.Name = "labelArticul";
-            this.labelArticul.Size = new System.Drawing.Size(87, 13);
+            this.labelArticul.Size = new System.Drawing.Size(135, 21);
             this.labelArticul.TabIndex = 0;
-            this.labelArticul.Text = "Артикул заказа";
+            this.labelArticul.Text = "Артикул заказа:";
             // 
             // labelStatus
             // 
             this.labelStatus.AutoSize = true;
+            this.labelStatus.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelStatus.Location = new System.Drawing.Point(21, 56);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(80, 13);
+            this.labelStatus.Size = new System.Drawing.Size(123, 21);
             this.labelStatus.TabIndex = 1;
-            this.labelStatus.Text = "Статус заказа";
+            this.labelStatus.Text = "Статус заказа:";
             // 
             // labelAddress
             // 
             this.labelAddress.AutoSize = true;
+            this.labelAddress.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAddress.Location = new System.Drawing.Point(21, 79);
             this.labelAddress.Name = "labelAddress";
-            this.labelAddress.Size = new System.Drawing.Size(115, 13);
+            this.labelAddress.Size = new System.Drawing.Size(187, 21);
             this.labelAddress.TabIndex = 2;
-            this.labelAddress.Text = "Адрес пункта выдачи";
+            this.labelAddress.Text = "Адрес пункта выдачи:";
             // 
             // labelDateOrder
             // 
             this.labelDateOrder.AutoSize = true;
+            this.labelDateOrder.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDateOrder.Location = new System.Drawing.Point(21, 102);
             this.labelDateOrder.Name = "labelDateOrder";
-            this.labelDateOrder.Size = new System.Drawing.Size(72, 13);
+            this.labelDateOrder.Size = new System.Drawing.Size(105, 21);
             this.labelDateOrder.TabIndex = 3;
-            this.labelDateOrder.Text = "Дата заказа";
+            this.labelDateOrder.Text = "Дата заказа:";
             // 
             // labelDateDelivery
             // 
             this.labelDateDelivery.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelDateDelivery.Location = new System.Drawing.Point(386, 4);
+            this.labelDateDelivery.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDateDelivery.Location = new System.Drawing.Point(894, 3);
             this.labelDateDelivery.Name = "labelDateDelivery";
-            this.labelDateDelivery.Size = new System.Drawing.Size(153, 142);
+            this.labelDateDelivery.Size = new System.Drawing.Size(152, 141);
             this.labelDateDelivery.TabIndex = 4;
-            this.labelDateDelivery.Text = "Дата доставки";
+            this.labelDateDelivery.Text = "Дата доставки:";
             this.labelDateDelivery.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(755, 70);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(103, 34);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Редактировать";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(755, 110);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(103, 34);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Удалить";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // Order
             // 
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.labelDateDelivery);
             this.Controls.Add(this.labelDateOrder);
             this.Controls.Add(this.labelAddress);
             this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.labelArticul);
             this.Name = "Order";
-            this.Size = new System.Drawing.Size(543, 150);
+            this.Size = new System.Drawing.Size(1050, 148);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -169,5 +198,7 @@
         private System.Windows.Forms.Label labelAddress;
         private System.Windows.Forms.Label labelDateOrder;
         private System.Windows.Forms.Label labelDateDelivery;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

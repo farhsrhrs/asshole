@@ -13,9 +13,9 @@ using System.Windows.Forms;
 
 namespace asshole
 {
-    public partial class Form1 : Form
+    public partial class auth : Form
     {
-        public Form1()
+        public auth()
         {
             InitializeComponent();
         }
@@ -23,7 +23,7 @@ namespace asshole
         private void button2_Click(object sender, EventArgs e)//гость
         {
             this.Hide();
-            Form2 form2 = new Form2("Гость", "Гость");
+            Main form2 = new Main("Гость", "Гость");
             form2.Show();
 
         }
@@ -55,7 +55,7 @@ namespace asshole
                                 {
                                     MessageBox.Show("Авторизация успешна!", "Информация", MessageBoxButtons.OK);
                                     this.Hide();
-                                    Form2 form2 = new Form2(reader.GetString(0), reader.GetString(1));
+                                    Main form2 = new Main(reader.GetString(0), reader.GetString(1));
                                     form2.Show();
                                     return;
                                 }
